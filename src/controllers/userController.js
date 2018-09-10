@@ -1,6 +1,6 @@
 const userQueries = require("../db/queries.users.js");
 const passport = require("passport");
-
+const publishableKey = process.env.PUBLISHABLE_KEY;
 module.exports = {
     signUp(req, res, next){
       res.render("users/sign_up");
@@ -56,26 +56,18 @@ module.exports = {
             res.redirect("/");
           },
 
-          updatePremium(req, res, next) {
-            userQueries.updateUser(req.params.id, 1, (err, user) => {
-                if(err || user == null) {
-                    console.log(err);
-                    res.redirect(404, `/users/${req.params.id}`)
-                } else {
-                    res.redirect(`/users/${req.params.id}`)
-                }
-            });
-        }, 
-    
-        updateStandard(req, res, next) {
-            userQueries.updateUser(req.params.id, 0, (err, user) => {
-                if(err || user == null) {
-                    console.log(err);
-                    res.redirect(404, `/users/${req.params.id}`)
-                } else {
-                    console.log(user);
-                    res.redirect(`/users/${req.params.id}`)
-                }
-            });
-        }, 
+          upgradeForm(req, res, next){
+            res.render("users/ug_handle", {publishableKey});
+          },
+       
+          upgrade(req, res, next){
+            userQueries.upgrade(req.user.dataValues.id);
+            res.render("users/payment_notice");
+          },
+       
+          downgrade(req, res, next){
+            userQueries.downgrade(req.user.dataValues.id);
+            req.flash("notice", "You are no longer a premium user!");
+            res.redirect("/");
+          }
   }

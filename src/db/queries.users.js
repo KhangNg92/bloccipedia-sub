@@ -37,27 +37,30 @@ module.exports = {
     })
   },
 
-  getUser(id, callback) {
-    User.findById(id)
-    .then((user) => {
-        callback(null, user);
-    })
-    .catch((err)=> {
-        callback(err);
-    })
-}, 
 
-updateUser(id, updatedRole, callback) {
+  upgrade(id, callback){
     return User.findById(id)
-    .then((user)=> { 
-        return user.update({role: updatedRole},{fields: ['role']})
-        .then(() => {
-            callback(null, user)
-        })
-        .catch((err) => {
-            callback(err);
-        });
-    });
-}
+    .then((user) => {
+      if(!user){
+        return callback("User does not exist!");
+      } else {
+        return user.updateAttributes({role: "premium"});
+      }
+    }) .catch((err) => {
+      callback(err);
+    })
+  },
 
+  downgrade(id, callback){
+    return User.findById(id)
+    .then((user) => {
+      if(!user){
+        return callback("User does not exist!");
+      } else {
+        return user.updateAttributes({role: "standard"});
+      }
+    }) .catch((err) => {
+      callback(err);
+    })
+  }
 }
