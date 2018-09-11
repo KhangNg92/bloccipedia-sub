@@ -71,13 +71,7 @@ module.exports = {
             if(err || wiki == null) {
                 res.redirect(404, "/")
             } else {
-                const authorized = new Authorizer(req.user).edit();
-		if(authorized){
-                  res.render("wikis/edit", {wiki});
-		} else {
-		  req.flash("notice", "You are not authorized to do that.");
-                  res.redirect(`/wikis/${req.params.id}`);
-		}
+                res.render("wikis/edit", {wiki})
             }
         });
     },
