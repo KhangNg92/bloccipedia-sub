@@ -1,10 +1,11 @@
 const wikiQueries = require("../db/queries.wikis.js");
 const Authorizer = require("../policies/wiki");
-
+const markdown = require("markdown").markdown;
 module.exports = {
 
     public(req, res, next){
         wikiQueries.getAllWikis((err, wikis) => {
+            
             if(err){
                 res.redirect(500, "static/index");
             } else {
@@ -45,11 +46,19 @@ module.exports = {
     show(req, res, next) {
 
         wikiQueries.getWiki(req.params.id, (err, wiki) => {
-
+            let markdownWiki = {
+                title: markdown.toHTML(wiki.title),
+                body: markdown.toHTML(wiki.body),
+                private: wiki.private,
+                userId: wiki.userId,
+                id: wiki.id
+            };
+            console.log(markdownWiki);
             if(err || wiki == null) {
                 res.redirect(404, "/")
             } else {
-                res.render("wikis/show", {wiki});
+                wiki.body = markdown.toHTML(wiki.body);
+                res.render("wikis/show", {markdownWiki});
             }
         });
     },
