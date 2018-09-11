@@ -4,7 +4,8 @@ const helper = require("../auth/helpers");
 
 const wikiController = require("../controllers/wikiController");
 
-router.get("/wikis/", wikiController.index);
+router.get("/wikis/public", wikiController.public); 
+router.get("/wikis/private", wikiController.private); 
 
 router.get("/wikis/new", wikiController.new);
 
@@ -17,5 +18,6 @@ router.post("/wikis/:id/destroy", wikiController.destroy);
 router.get("/wikis/:id/edit", wikiController.edit)
 
 router.post("/wikis/:id/update", wikiController.update);
+
 
 module.exports = router;
